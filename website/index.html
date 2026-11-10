@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="An evolving collection of scientific paper presentations.">
+  <title>Research Slides Library</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="./" aria-label="Research Slides Library home"><span class="brand-mark" aria-hidden="true">✳</span> Research Slides Library</a>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch color theme">◐ <span>Theme</span></button>
+    </div>
+  </header>
+  <main>
+    <section class="hero shell" aria-labelledby="page-title">
+      <p class="eyebrow"><span aria-hidden="true"></span> A CURATED KNOWLEDGE COLLECTION</p>
+      <h1 id="page-title">Research, <em>presented.</em></h1>
+      <p class="hero-subtitle">An evolving collection of scientific paper presentations</p>
+      <p class="hero-copy">Ideas worth sharing, one paper at a time. Explore the library to discover research through slides.</p>
+      <a class="hero-link" href="#library">Explore the library <span aria-hidden="true">↓</span></a>
+      <div class="hero-decoration" aria-hidden="true"><span>R</span><span> / </span><span>S</span><small>NOTES ON<br>DISCOVERY</small></div>
+    </section>
+    <section id="library" class="library">
+      <div class="shell">
+        <div class="section-heading">
+          <div><p class="eyebrow">THE COLLECTION</p><h2>Explore the library<span class="heading-dot">.</span></h2></div>
+          <p id="count" class="count" aria-live="polite">Loading presentations…</p>
+        </div>
+        <div class="controls">
+          <label class="search"><span aria-hidden="true">⌕</span><span class="sr-only">Search presentations</span><input id="search" type="search" placeholder="Search titles, authors, or topics…"></label>
+          <label class="select-wrap"><span class="sr-only">Filter by year</span><select id="year"><option value="">All years</option></select></label>
+          <label class="select-wrap"><span class="sr-only">Filter by tag</span><select id="tag"><option value="">All topics</option></select></label>
+          <label class="select-wrap"><span class="sr-only">Sort presentations</span><select id="sort"><option value="asc">Title: A–Z</option><option value="desc">Title: Z–A</option></select></label>
+        </div>
+        <div id="status" class="status" role="status"></div>
+        <div id="grid" class="grid"></div>
+      </div>
+    </section>
+  </main>
+  <footer class="shell footer"><span><span class="brand-mark" aria-hidden="true">✳</span> Research Slides Library</span><span>Made for curious minds.</span></footer>
+</body>
+</html>
