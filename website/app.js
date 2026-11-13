@@ -67,7 +67,28 @@ function render() {
   });
   filtered.sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: "base" }) * (sort.value === "desc" ? -1 : 1));
   count.textContent = `${presentations.length} ${presentations.length === 1 ? "presentation" : "presentations"}${filtered.length !== presentations.length ? ` · ${filtered.length} shown` : ""}`;
-  grid.replaceChildren(...filtered.map(cardFor));
+  const groups = new Map();
+  filtered.forEach(item => {
+    const key = item.year !== undefined && item.year !== null && String(item.year).trim() ? String(item.year) : "Year not specified";
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(item);
+  });
+  const orderedGroups = [...groups].sort(([a], [b]) => {
+    if (a === "Year not specified") return 1;
+    if (b === "Year not specified") return -1;
+    return b.localeCompare(a, undefined, { numeric: true });
+  });
+  let index = 0;
+  grid.replaceChildren(...orderedGroups.map(([label, items]) => {
+    const section = document.createElement("section");
+    section.className = "year-group";
+    section.append(textElement("h3", "year-heading", label));
+    const cards = document.createElement("div");
+    cards.className = "grid";
+    cards.append(...items.map(item => cardFor(item, index++)));
+    section.append(cards);
+    return section;
+  }));
   status.textContent = filtered.length ? "" : (presentations.length ? "No presentations match your search. Try another term or filter." : "The library is empty. Check back soon.");
 }
 

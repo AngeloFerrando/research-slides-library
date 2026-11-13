@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate a static catalog from the top-level entries in slides/."""
+"""Generate a static catalog from entries in slides/."""
 
 import argparse
 import json
@@ -67,19 +67,23 @@ def discover(slides):
     if not slides.is_dir():
         raise ValueError(f"Slides directory not found: {slides}")
     entries = []
-    for item in sorted(slides.iterdir(), key=lambda p: p.name.casefold()):
-        if item.is_dir() and (item / "index.html").is_file():
-            html = item / "index.html"
-            path = f"slides/{quote(item.name, safe='')}/index.html"
-            name = item.name
-            metadata = metadata_for(item)
-        elif item.is_file() and item.suffix.lower() == ".html":
-            html = item
+    presentations = []
+    for html in slides.rglob("index.html"):
+        folder = html.parent
+        relative = html.relative_to(slides)
+        path = "slides/" + "/".join(quote(part, safe="") for part in relative.parts)
+        presentations.append((relative.as_posix(), html, folder, folder.name, path))
+    for item in slides.iterdir():
+        if item.is_file() and item.suffix.lower() == ".html":
             path = f"slides/{quote(item.name, safe='')}"
-            name = item.stem
-            metadata = {}
-        else:
-            continue
+            presentations.append((item.name, item, None, item.stem, path))
+
+    for _, html, folder, name, path in sorted(presentations, key=lambda item: item[0].casefold()):
+        metadata = metadata_for(folder) if folder else {}
+        if folder:
+            relative = folder.relative_to(slides)
+            if relative.parts and re.fullmatch(r"\d{4}", relative.parts[0]):
+                metadata.setdefault("year", relative.parts[0])
         parser = TitleParser()
         try:
             parser.feed(html.read_text(encoding="utf-8-sig"))

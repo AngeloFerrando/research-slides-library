@@ -15,7 +15,7 @@ class CatalogTests(unittest.TestCase):
 
     def folder(self, name, html):
         folder = self.slides / name
-        folder.mkdir()
+        folder.mkdir(parents=True)
         (folder / "index.html").write_text(html, encoding="utf-8")
         return folder
 
@@ -45,6 +45,18 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(discover(self.slides)[0]["url"], "slides/new-name/index.html")
         (self.slides / "new-name" / "index.html").unlink()
         self.assertEqual(discover(self.slides), [])
+
+    def test_nested_presentations_infer_year_and_keep_metadata_override(self):
+        self.folder("2026/FMAS", "<title>FMAS</title>")
+        folder = self.folder("2025/ICFEM", "<title>ICFEM</title>")
+        (folder / "metadata.json").write_text(json.dumps({"year": 2024}))
+
+        items = discover(self.slides)
+
+        self.assertEqual(items[0]["url"], "slides/2025/ICFEM/index.html")
+        self.assertEqual(items[0]["year"], 2024)
+        self.assertEqual(items[1]["url"], "slides/2026/FMAS/index.html")
+        self.assertEqual(items[1]["year"], "2026")
 
     def test_invalid_metadata_reports_failure(self):
         folder = self.folder("paper", "<title>Paper</title>")
